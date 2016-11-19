@@ -2,6 +2,7 @@ package dnspod
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/3pjgames/terraform-provider-dnspod/dnspod/client"
@@ -93,7 +94,7 @@ func testAccCheckRecordExistsWithProviders(n string, providers *[]*schema.Provid
 		if rs.Primary.ID == "" {
 			return fmt.Errorf("No ID is set")
 		}
-		domainId := rs.Primary.Attributes["domain_id"]
+		domainIdRecordId := strings.SplitN(rs.Primary.ID, "-", 2)
 		for _, provider := range *providers {
 			// Ignore if Meta is empty, this can happen for validation providers
 			if provider.Meta() == nil {
@@ -102,7 +103,7 @@ func testAccCheckRecordExistsWithProviders(n string, providers *[]*schema.Provid
 
 			apiClient := provider.Meta().(*client.Client)
 			var resp client.RecordInfoResponse
-			err := apiClient.Call("Record.Info", &client.RecordInfoRequest{DomainId: domainId, RecordId: rs.Primary.ID}, &resp)
+			err := apiClient.Call("Record.Info", &client.RecordInfoRequest{DomainId: domainIdRecordId[0], RecordId: domainIdRecordId[1]}, &resp)
 			if err != nil {
 				return err
 			}

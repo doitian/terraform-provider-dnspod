@@ -1,6 +1,8 @@
 package dnspod
 
 import (
+	"strings"
+
 	"github.com/3pjgames/terraform-provider-dnspod/dnspod/client"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -77,7 +79,7 @@ func resourceRecordCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	id := (*resp.Record.Id).(string)
-	d.SetId(id)
+	d.SetId(req.DomainId + "-" + id)
 
 	return nil
 }
@@ -86,8 +88,7 @@ func resourceRecordUpdate(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*client.Client)
 
 	req := client.RecordModifyRequest{}
-	req.RecordId = d.Id()
-	req.DomainId = d.Get("domain_id").(string)
+	req.DomainId, req.RecordId = splitId(d.Id())
 	req.SubDomain = d.Get("sub_domain").(string)
 	req.RecordType = d.Get("record_type").(string)
 	req.RecordLine = d.Get("record_line").(string)
@@ -115,7 +116,8 @@ func resourceRecordUpdate(d *schema.ResourceData, meta interface{}) error {
 func resourceRecordRead(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*client.Client)
 
-	req := client.RecordInfoRequest{RecordId: d.Id(), DomainId: d.Get("domain_id").(string)}
+	domainId, recordId := splitId(d.Id())
+	req := client.RecordInfoRequest{RecordId: recordId, DomainId: domainId}
 	var resp client.RecordInfoResponse
 	err := conn.Call("Record.Info", &req, &resp)
 	if err != nil {
@@ -129,7 +131,7 @@ func resourceRecordRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.Set("domain_id", resp.Record.DomainId)
+	d.Set("domain_id", domainId)
 	d.Set("sub_domain", resp.Record.SubDomain)
 	d.Set("record_type", resp.Record.RecordType)
 	d.Set("record_line", resp.Record.RecordLine)
@@ -156,4 +158,9 @@ func resourceRecordDelete(d *schema.ResourceData, meta interface{}) error {
 	d.SetId("")
 
 	return nil
+}
+
+func splitId(id string) (string, string) {
+	parts := strings.SplitN(id, "-", 2)
+	return parts[0], parts[1]
 }
