@@ -32,6 +32,7 @@ func ProviderWithConfig(c *client.Config) terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"dnspod_domain": resourceDomain(),
+			"dnspod_record": resourceRecord(),
 		},
 
 		ConfigureFunc: providerConfigure(c),

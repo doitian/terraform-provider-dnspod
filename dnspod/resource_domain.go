@@ -69,7 +69,9 @@ func resourceDomainDelete(d *schema.ResourceData, meta interface{}) error {
 	req := client.DomainRemoveRequest{DomainId: d.Id()}
 	err := conn.Call("Domain.Remove", &req, &resp)
 	if err != nil {
-		return err
+		if bsce, ok := err.(*client.BadStatusCodeError); !ok || bsce.Code != "6" {
+			return err
+		}
 	}
 
 	d.SetId("")

@@ -1,10 +1,10 @@
 package client
 
 type Record struct {
-	Id string `json:"id"`
+	Id *interface{} `json:"id"`
 
 	// Used in Record.Modify
-	RecordId string `json:"id"`
+	RecordId string `json:"record_id"`
 
 	DomainId   string `json:"domain_id"`
 	SubDomain  string `json:"sub_domain"`
