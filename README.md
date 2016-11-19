@@ -8,8 +8,7 @@ Config
 
 ```
 provider "dnspod" {
-  token_id = "${var.dnspod_token_id}"
-  token = "${var.dnspod_token}"
+  login_token = "${var.dnspod_login_token}"
 }
 ```
 
