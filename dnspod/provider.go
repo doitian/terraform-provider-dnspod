@@ -25,7 +25,7 @@ func ProviderWithConfig(c *client.Config) terraform.ResourceProvider {
 			"endpoint": &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DNSPOD_ENDPOINT", nil),
+				DefaultFunc: schema.EnvDefaultFunc("DNSPOD_ENDPOINT", ""),
 				Description: "DNSPod API Endpoint",
 			},
 		},
