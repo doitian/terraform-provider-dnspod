@@ -26,3 +26,7 @@ resource "dnspod_record" "www_example_com" {
     ttl: 86400
 }
 ```
+
+## Import
+
+To import domain, use the domain ID return from API. To import record, concat its domain id and record id with "-".
