@@ -5,6 +5,19 @@ env:
   global:
     - DNSPOD_DEBUG=true
 script:
-  # Set DNSPOD_LOGIN_TOKEN in Travis Project Setting to enable Acceptance Tests
-  - 'if [ -n "$DNSPOD_LOGIN_TOKEN" ]; then env TF_ACC=true go test -v ./...; fi'
-  - 'if [ -z "$DNSPOD_LOGIN_TOKEN" ]; then go test -v ./...; fi'
+  - if [ -n "$DNSPOD_LOGIN_TOKEN" ]; then env TF_ACC=true go test -v ./...; fi
+  - if [ -z "$DNSPOD_LOGIN_TOKEN" ]; then go test -v ./...; fi
+before_deploy:
+  - go get github.com/mitchellh/gox
+  - 'gox -os="linux darwin" -arch="amd64" -ldflags "-s -w" -output "pkg/{{.OS}}_{{.Arch}}/terraform-provider-dnspod" .'
+deploy:
+  provider: releases
+  api_key:
+    secure: Nm0u4lqDWHRtsT+hVPhpKNLCkIStLXNUN46/szfQRFTML1eMvG/WKWh7llA4sP9LdjQMWi7ekBNyy6qxaVmwV/uCqQk1pVZ8hKGYYL3QpllOaCzYTqTGl99sIUZpCAX9zt1sfg6FOkMnAjt11t5th/0E8GgJssgue1N+hPS/LZwVvbE0D8IlnNd6M8xuKEVDozWDRDl2CmSf14cvkdAAWwkCudFQRZIsvDGspacrBZVTAdXkJ7LkLzUZZq23Spj4hav9kw5A2DCxeu7tXm6FJwGHEeMruxsSQzp+w76D8yAnVstx8XkV6kX7irvnK/rUmVrOfrLOmsYJ/uCxzHdV2LO843yhICa5yQkfW6M4s3NDFZ6tUMoiFUabf+U+WtpyI160XZeRlIWgglcom5bMMZBMFvtThkx+sAJdyquIYlw8GR97NLC5lZNsbBv83sr2RhjX6h999bFxEdzckNHXyn7yHF+P9HqexYugyYlsph8dZFOh/GKZAvnvj39Sfbdn6xedCRn4tlqPlAgXlN2HlC4btXaytewWS6OMt82lL3I2BhYFWxCDEr0E6Vjybsrns99J0pfPWHZs75IKGXpkkMhFjxrU2q6Kwb4ZkzNm3t+NK7ZMJCx1wERMhNrDiEk3sh/DNLrdaN9VBguZp2qdfBUWtGnXgy4geBKlin6FusI=
+  file:
+    - pkg/linux_amd64/terraform-provider-dnspod
+    - pkg/darwin_amd64/terraform-provider-dnspod
+  on:
+    tags: true
+    repo: 3pjgames/terraform-provider-dnspod
+  skip_cleanup: true
