@@ -1,0 +1,8 @@
+language: go
+go:
+  - master
+env:
+  # Add DNSPOD_LOGIN_TOKEN in travis
+  - TF_ACC=true
+script: go test -v ./...
+
