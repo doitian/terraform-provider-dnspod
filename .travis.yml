@@ -1,6 +1,10 @@
 language: go
 go:
   - master
+env:
+  global:
+    - DNSPOD_DEBUG=true
 script:
-  - 'if [ -n "$DOCKER_LOGIN_TOKEN" ]; then env TF_ACC=true go test -v ./...; fi'
-  - 'if [ -z "$DOCKER_LOGIN_TOKEN" ]; then go test -v ./...; fi'
+  # Set DNSPOD_LOGIN_TOKEN in Travis Project Setting to enable Acceptance Tests
+  - 'if [ -n "$DNSPOD_LOGIN_TOKEN" ]; then env TF_ACC=true go test -v ./...; fi'
+  - 'if [ -z "$DNSPOD_LOGIN_TOKEN" ]; then go test -v ./...; fi'
