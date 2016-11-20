@@ -21,18 +21,18 @@ func TestAccResourceDomain(t *testing.T) {
 		CheckDestroy:  testAccCheckDomainDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config: testAccDomainConfig,
+				Config: fmt.Sprintf(testAccDomainConfig, testDomain),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDomainExists("dnspod_domain.foo", &domain),
-					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", "terraform-provider-dnspod.org"),
+					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", testDomain),
 				),
 			},
 			// Repeat the config
 			resource.TestStep{
-				Config: testAccDomainConfig,
+				Config: fmt.Sprintf(testAccDomainConfig, testDomain),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDomainExists("dnspod_domain.foo", &domain),
-					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", "terraform-provider-dnspod.org"),
+					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", testDomain),
 				),
 			},
 		},
@@ -41,7 +41,7 @@ func TestAccResourceDomain(t *testing.T) {
 
 const testAccDomainConfig = `
 resource "dnspod_domain" "foo" {
-	domain = "terraform-provider-dnspod.org"
+	domain = "%s"
 }
 `
 

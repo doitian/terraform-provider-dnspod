@@ -20,30 +20,30 @@ func TestAccResourceRecord(t *testing.T) {
 		CheckDestroy:  testAccCheckDomainDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config: testAccRecordConfig,
+				Config: fmt.Sprintf(testAccRecordConfig, testDomain),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckRecordExists("dnspod_record.www"),
-					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", "terraform-provider-dnspod.org"),
+					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", testDomain),
 					resource.TestCheckResourceAttr("dnspod_record.www", "sub_domain", "www"),
 					resource.TestCheckResourceAttr("dnspod_record.www", "record_type", "A"),
 					resource.TestCheckResourceAttr("dnspod_record.www", "value", "8.8.8.8"),
 				),
 			},
 			resource.TestStep{
-				Config: testAccRecordConfig,
+				Config: fmt.Sprintf(testAccRecordConfig, testDomain),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckRecordExists("dnspod_record.www"),
-					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", "terraform-provider-dnspod.org"),
+					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", testDomain),
 					resource.TestCheckResourceAttr("dnspod_record.www", "sub_domain", "www"),
 					resource.TestCheckResourceAttr("dnspod_record.www", "record_type", "A"),
 					resource.TestCheckResourceAttr("dnspod_record.www", "value", "8.8.8.8"),
 				),
 			},
 			resource.TestStep{
-				Config: testAccRecordConfigModify,
+				Config: fmt.Sprintf(testAccRecordConfigModify, testDomain),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckRecordExists("dnspod_record.www"),
-					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", "terraform-provider-dnspod.org"),
+					resource.TestCheckResourceAttr("dnspod_domain.foo", "domain", testDomain),
 					resource.TestCheckResourceAttr("dnspod_record.www", "sub_domain", "www"),
 					resource.TestCheckResourceAttr("dnspod_record.www", "record_type", "A"),
 					resource.TestCheckResourceAttr("dnspod_record.www", "value", "8.8.4.4"),
@@ -55,7 +55,7 @@ func TestAccResourceRecord(t *testing.T) {
 
 const testAccRecordConfig = `
 resource "dnspod_domain" "foo" {
-	domain = "terraform-provider-dnspod.org"
+	domain = "%s"
 }
 
 resource "dnspod_record" "www" {
@@ -68,7 +68,7 @@ resource "dnspod_record" "www" {
 
 const testAccRecordConfigModify = `
 resource "dnspod_domain" "foo" {
-	domain = "terraform-provider-dnspod.org"
+	domain = "%s"
 }
 
 resource "dnspod_record" "www" {

@@ -1,9 +1,11 @@
 package dnspod
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
@@ -13,6 +15,7 @@ import (
 
 var testAccProviders map[string]terraform.ResourceProvider
 var testAccProvider *schema.Provider
+var testDomain string
 
 func init() {
 	config := &client.Config{Lang: "en"}
@@ -24,6 +27,7 @@ func init() {
 	testAccProviders = map[string]terraform.ResourceProvider{
 		"dnspod": testAccProvider,
 	}
+	testDomain = fmt.Sprintf("terraform-provider-dnspod-%d.org", time.Now().Unix())
 }
 
 func TestProvider(t *testing.T) {
