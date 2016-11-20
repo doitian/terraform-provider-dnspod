@@ -1,8 +1,6 @@
 language: go
 go:
   - master
-env:
-  # Add DNSPOD_LOGIN_TOKEN in travis
-  - TF_ACC=true
-script: go test -v ./...
-
+script:
+  - 'if [ -n "$DOCKER_LOGIN_TOKEN" ]; then env TF_ACC=true go test -v ./...; fi'
+  - 'if [ -z "$DOCKER_LOGIN_TOKEN" ]; then go test -v ./...; fi'
