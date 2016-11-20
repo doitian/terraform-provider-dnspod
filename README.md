@@ -1,5 +1,7 @@
 # terraform-provider-dnspod
 
+![Travis Status](https://travis-ci.org/3pjgames/terraform-provider-dnspod.svg?branch=master)
+
 [Terraform](https://www.terraform.io/) [Provider Plugin](https://www.terraform.io/docs/plugins/provider.html) which manages DNS records in [DNSPod](https://www.dnspod.cn).
 
 ## Example
