@@ -146,8 +146,9 @@ func resourceRecordRead(d *schema.ResourceData, meta interface{}) error {
 func resourceRecordDelete(d *schema.ResourceData, meta interface{}) error {
 	conn := meta.(*client.Client)
 
+	domainId, recordId := splitId(d.Id())
 	var resp client.RecordRemoveResponse
-	req := client.RecordRemoveRequest{DomainId: d.Id()}
+	req := client.RecordRemoveRequest{DomainId: domainId, RecordId: recordId}
 	err := conn.Call("Record.Remove", &req, &resp)
 	if err != nil {
 		if bsce, ok := err.(*client.BadStatusCodeError); !ok || (bsce.Code != "6" && bsce.Code != "8") {
